@@ -100,7 +100,7 @@ namespace refactor_me.Repositories
             var connectionToDb = new SqlConnection(_connStr);
             var cmd = new SqlCommand(@"UPDATE Product SET
                 Name = @Name, Description = @Description, 
-                Price = @Price, Deliveryprice = @DeliveryPrice
+                Price = @Price, DeliveryPrice = @DeliveryPrice
                 WHERE Id = @Id", connectionToDb);
 
             cmd.Parameters.AddWithValue("@Id", product.Id);

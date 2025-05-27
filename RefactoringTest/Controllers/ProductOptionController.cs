@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Web.Http;
@@ -48,6 +49,40 @@ namespace refactor_me.Controllers
 
             return Created(new Uri(Request.RequestUri, $"{productOption.Id}"), productOption);
 
+        }
+
+        [Route("{productId}/options/{id}")]
+        [HttpPut]
+        public IHttpActionResult UpdateProductOptionByProductOptionId(Guid productId, Guid id, ProductOption productOption)
+        {
+            if (productOption == null)
+                return BadRequest("Product option data is required");
+
+            productOption.ProductId = productId;
+            productOption.Id = id;
+
+            if (productOption.Id != id)
+                return BadRequest("Product option ID mismatch between URL and body.");
+
+            var existingProductOption = _productOptionRepository.GetById(productId, id);
+            if (existingProductOption == null)
+                return NotFound();
+
+            _productOptionRepository.Update(productOption);
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        [Route("{productid}/options/{id}")]
+        [HttpDelete]
+        public IHttpActionResult DeleteProductOptionById(Guid productId, Guid id)
+        {
+            var existingProductOption = _productOptionRepository.GetById(productId, id);
+
+            if (existingProductOption == null)
+                return NotFound();
+
+            _productOptionRepository.Delete(id);
+            return StatusCode(HttpStatusCode.NoContent);
         }
     }
 }

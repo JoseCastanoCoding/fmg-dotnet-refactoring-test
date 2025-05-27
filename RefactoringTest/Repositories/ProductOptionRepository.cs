@@ -85,5 +85,31 @@ namespace refactor_me.Repositories
             connectionToDb.Open();
             cmd.ExecuteNonQuery();
         }
+
+        public void Update(ProductOption productOption)
+        {
+            var connectionToDb = new SqlConnection(_connStr);
+            var cmd = new SqlCommand(@"UPDATE ProductOption SET 
+                Name = @Name, Description = @Description WHERE Id = @Id", connectionToDb);
+
+            cmd.Parameters.AddWithValue("@Id", productOption.Id);
+            cmd.Parameters.AddWithValue("@ProductId", productOption.ProductId);
+            cmd.Parameters.AddWithValue("@Name", productOption.Name);
+            cmd.Parameters.AddWithValue("@Description", (object)productOption.Description ?? DBNull.Value);
+
+            connectionToDb.Open();
+            cmd.ExecuteNonQuery();
+        }
+
+        public void Delete(Guid id)
+        {
+            var connectionToDb = new SqlConnection(_connStr);
+            var cmd = new SqlCommand("DELETE FROM ProductOption WHERE Id = @Id", connectionToDb);
+
+            cmd.Parameters.AddWithValue("@Id", id);
+
+            connectionToDb.Open();
+            cmd.ExecuteNonQuery();
+        }
     }
 }
